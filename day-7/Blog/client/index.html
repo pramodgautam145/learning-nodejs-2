@@ -1,0 +1,31 @@
+<html>
+    <body>
+<form>
+    <label for="txtNewPostTitle">Title:</label>
+    <input type="text" id="txtNewPostTitle"/>
+    <button class="btn btn-primary" onclick="AddNewPost(event)">Add Post</button>
+</form>
+<hr/>
+<button class ="btn btn-primary" onclick="FetchPosts()">Get All Posts</button>
+<hr/>
+<div class ="postList"></div>
+<script>
+    function AddNewPost(e){
+    let newPosttitle = document.querySelector("#txtNewPostTitle").value;
+    fetch("http://localhost:4000/posts",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body: JSON.stringify({ title:newPostTitle}),
+    }).then((res)=>res.json)
+      .then((newPost)=>console.log(newPost));
+    }
+
+    async function FetchPosts(){
+        let res =await fetch("http://localhost:4000/posts");
+        let posts = await res.json();
+        console.log(posts);
+    }
+</script>
+    </body>

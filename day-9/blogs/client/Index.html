@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0-beta1/css/bootstrap.min.css"
+    />
+    <script>
+      function AddNewPost(e) {
+        e.preventDefault();
+        let newPostTitle = document.querySelector("#txtNewPostTitle").value;
+        fetch("http://posts.com/posts/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: newPostTitle }),
+        })
+          .then((res) => res.json())
+          .then((newPost) => console.log(newPost));
+      }
+
+      async function FetchPosts() {
+        let res = await fetch("http://posts.com/posts");
+        let posts = await res.json();
+        console.log(posts);
+        DisplayPosts(Object.values(posts));
+      }
+
+      function DisplayPosts(posts) {
+        for (const post of posts) {
+          DisplayPostCard(post);
+        }
+      }
+
+      function DisplayPostCard(post) {
+        // title
+        // textbox -> comment
+        // btn -> Add Comment
+        // fetch(4001)
+        // comments count for every post
+        let postCard = document.createElement("div");
+        postCard.className = "card mx-2";
+        postCard.setAttribute("style", "width:18rem");
+
+        let postCardBody = document.createElement("div");
+        postCardBody.className = "card-body";
+
+        let postCardTitle = document.createElement("h5");
+        postCardTitle.className = "card-title";
+        postCardTitle.innerText = post.title;
+
+        let linkComments = document.createElement("a");
+        linkComments.href = "";
+        linkComments.innerText = "Comments - " + post.comments.length;
+        linkComments.id = "totalComments-" + post.id;
+
+        let inputComment = document.createElement("input");
+
+        inputComment.placeholder = "New Comment..";
+        inputComment.id = "txtNewComment-" + post.id;
+        inputComment.className = "form-control";
+
+        let btnAddComment = document.createElement("button");
+        btnAddComment.className = "btn btn-success";
+        btnAddComment.innerText = "Add Comment";
+        btnAddComment.addEventListener("click", () => AddComment(post.id));
+
+        postCardBody.append(postCardTitle);
+        postCardBody.append(linkComments);
+        postCardBody.append(inputComment);
+        postCardBody.append(btnAddComment);
+        postCard.append(postCardBody);
+
+        let postList = document.querySelector(".postList");
+        postList.append(postCard);
+      }
+
+      function AddComment(postId) {
+        let newComment = document.getElementById(
+          "txtNewComment-" + postId
+        ).value;
+        fetch(`http://posts.com/posts/${postId}/comments`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: newComment }),
+        })
+          .then((res) => res.json())
+          .then((comments) => {
+            let linkComment = document.getElementById(
+              "totalComments-" + postId
+            );
+            linkComment.innerHTML = "Comments - " + comments.length;
+          });
+      }
+    </script>
+  </head>
+  <body class="container">
+    <form>
+      <label for="txtNewPostTitle"> Title : </label>
+
+      <input type="text" id="txtNewPostTitle" />
+
+      <button class="btn btn-primary" onclick="AddNewPost(event)">
+        Add Post
+      </button>
+    </form>
+
+    <hr />
+    <button class="btn btn-primary" onclick="FetchPosts()">
+      Get All Posts !
+    </button>
+    <hr />
+    <div class="postList row"></div>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventbus-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eventbus
+  template:
+    metadata:
+      labels:
+        app: eventbus
+    spec:
+      containers:
+        - name: eventbus
+          image: pramodgautam145/eventbus:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eventbus-srv-cl-ip
+spec:
+  selector:
+    app: eventbus
+  ports:
+    - name: eventbus
+      protocol: TCP
+      port: 4003
+      targetPort: 4003
