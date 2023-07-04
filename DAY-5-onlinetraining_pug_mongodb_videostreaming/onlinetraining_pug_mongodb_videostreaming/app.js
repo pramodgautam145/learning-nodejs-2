@@ -10,7 +10,7 @@ const mongoose = require("mongoose");
 var app = express();
 
 //mongoose.connect("mongodb://127.0.0.1:27017/coursesdb");
-mongoose.connect("mongodb+srv://pramodgautam145:Pra@720399@cluster0.apmw2bw.mongodb.net/coursesdb");
+mongoose.connect("mongodb+srv://xxxxxx:xxxxxxx@cluster0.apmw2bw.mongodb.net/coursesdb");
 mongoose.connection.once("open",()=>{
   console.log("Connected to database !")
 });
